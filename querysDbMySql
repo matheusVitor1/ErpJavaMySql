@@ -1,0 +1,90 @@
+create database vmr;
+use vmr;
+
+create table login(
+id_usuario int(4) not null auto_increment,
+usuario varchar (15) not null unique,
+senha varchar (30) not null unique,
+primary key (id_usuario)
+);
+
+create table produto(
+id_produto int(4) not null auto_increment,
+valor_produto double,
+desc_produto varchar(100),
+primary key(id_produto)
+);
+
+select * from contas_pagar
+create table cliente(
+id_cliente int(4) not null auto_increment,
+nome_cliente varchar(50),
+cnpj_cliente varchar(30) unique,
+endereco_cliente varchar (100),
+primary key(id_cliente)
+);
+
+create table pedido(
+id_pedido int(4) not null auto_increment,
+id_produto int(4) not null,
+id_cliente int (4) not null,
+data_instalacao varchar (20),
+data_pedido varchar(20),
+foreign key (id_produto) references produto (id_produto),
+foreign key (id_cliente) references cliente (id_cliente),
+primary key(id_pedido)
+);
+
+
+create table nota_fiscal(
+id_nf int not null auto_increment,
+numero_nf varchar(60) not null,
+id_pedido int(4),
+foreign key (id_pedido) references pedido (id_pedido),
+primary key (id_nf)
+);
+
+create table contas_receber(
+id_contas_receber int(4) not null auto_increment,
+id_pedido int(4) not null,
+data_faturamento varchar(30),
+foreign key (id_pedido) references pedido (id_Pedido),
+primary key(id_contas_receber)
+);
+
+create table contas_pagar (
+id_contas_pagar int(4) not null auto_increment,
+aluguel double,
+luz double,
+internet double,
+telefonia double,
+tributos double,
+mes_ref varchar(30) unique,
+primary key(id_contas_pagar)
+);
+
+create table socios(
+id_socio int(3) not null auto_increment,
+nome_socio varchar(60),
+cnpj_socio varchar(60),
+primary key(id_socio)
+);
+
+create table salario(
+id_salario int (4) not null auto_increment,
+id_socio int (4) not null,
+salario double,
+mes_ref_salario varchar(30),
+foreign key (id_socio) references socios (id_socio),
+primary key (id_salario)
+);
+
+select * from contas_pagar;
+
+select sum(aluguel) as total from contas_pagar where id_contas_pagar = 1;
+
+select  SUM(aluguel + luz + internet + telefonia + tributos) as total from contas_pagar where mes_ref like "%08/2022%";
+
+select sum(pr.valor_produto) as total1 from produto pr, pedido pe, contas_receber c
+where c.id_pedido = pe.id_pedido and pr.id_produto = pe.id_produto and pe.data_pedido like "%08/2022%";
+
